@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { Component } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { NavBar } from "./components/NavBar";
+import StaffList from "./pages/stafflist";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      staff: []
+    }
+  }
+
+  componentDidMount() {
+    axios.get('http://144.217.242.22:1337/staff/users/website', {
+      headers: {
+        'Authorization': 'qR:zt;5h%^',
+        'Content-Type': 'application/json'
+      }
+    }).then(res => {
+      this.setState({staff: res.data.response})
+    })
+  }
+  render() {
+    return (
+      <Router>
+        <div className="App">
+        <NavBar />
+          <Route
+            exact
+            path='/staff'
+            render={props => (
+              <StaffList staff={this.state.staff}/>
+            )}
+          />
+        </div>
+      </Router>
+    );
+  }
 }
 
 export default App;
